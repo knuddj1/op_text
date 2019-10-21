@@ -35,8 +35,7 @@ class TransformerModel:
 			be provided if using one of the models in the downloadables
 			list. Local models will already have this
 		"""
-
-
+		
 		assert model_path in downloadables or os.path.isdir(model_path), ("model_path must be from either one of"
 																		  f" {downloadables} or a path to the"
 																		  " directory of a local model")
