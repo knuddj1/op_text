@@ -2,15 +2,15 @@ from distutils.core import setup
 from io import open
 
 setup(
-    name='op_sentiment',
-    packages=['op_sentiment'],
+    name='op_text',
+    packages=['op_text'],
     version='0.1',
     license='MIT',
     description='Identify the sentiment of a piece of text',
     author='Dean Knudson',
     author_email='knuddj1@student.op.ac.nz',
-    url='https://github.com/knuddj1/op_sentiment',
-    keywords='NLP deep learning transformer pytorch BERT GPT GPT-2 google openai CMU sentiment',
+    url='https://github.com/knuddj1/op_text',
+    keywords='NLP deep learning transformer pytorch BERT GPT GPT-2 google openai CMU sentiment text',
     install_requires=[
         'numpy',
         'torch>=1.0.0',
