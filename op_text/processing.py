@@ -21,9 +21,23 @@ class DataProcessor:
 			- text : str : A string of text
 
 		Returns:
-			- sample : dict : The input parameters for the model
+			- input_ids : list<int> : Each entry corresponds to a 
+			  word in the tokenizers dictionary. 0's indicate padding tokens
+			  when the sequence did not contain enough token ids to fill out
+			  the list to a length of max_seq_len.
 
-			Assuming a max_seq_len of 8 the output and an 
+			- input_mask : list<int> : Used to mask out padding tokens in
+			  the input_ids of length max_seq_len. 1's correspond to tokens from 
+			  the vocabulary present in the input sequence and 0's correspond to padding tokens.
+
+			- segment_ids : list<int> : Used to differentiate between two different
+			  sequences combined into one long sequence. Only single sequences are used in these
+			  models so this is always a list of 0's of length max_seq_len.
+
+			- positional_ids : list<int> : Used to tell the model the position of a input
+			  token in the sequence. Is of length max_seq_len.
+
+			Assuming max_seq_len=8 the output and an 
 			input text of "The man dropped his wallet" the
 			input parameters for the model would look something
 			like this:
@@ -34,22 +48,6 @@ class DataProcessor:
 				segment_ids : [0, 0, 0, 0, 0, 0, 0, 0],
 				positional_ids : [0, 1, 2, 3, 4, 5, 6, 7]
 			}
-
-			input_ids is a list of integers. Each entry corresponds to a 
-			word in the tokenizers dictionary. 0's indicate padding tokens
-			when the sequence did not contain enough token ids to fill out
-			the list to a length of max_seq_len.
-
-			input_mask is a list integers used to mask out padding tokens in
-			the input_ids of length max_seq_len. 1's correspond to tokens from 
-			the vocabulary present in the input sequence and 0's correspond to padding tokens.
-
-			segment_ids is a list of integers used to differentiate between two different
-			sequences combined into one long sequence. Only single sequences are used in these
-			models so this is always a list of 0's of length max_seq_len.
-
-			positional_ids is a list of integers used to tell the model the position of a input
-			token in the sequence. Is of length max_seq_len.
 		"""
 
 		# Tokenize text and but discard tokens after max_seq_len - 2 to allow cls and sep token
@@ -83,7 +81,11 @@ class DataFetcher(Dataset):
 	def __init__(self, data, tokenizer, max_seq_len, rtn_seg_pos=True, labels=None):
 		"""
 		Parameters:
-			- 
+			- data : list<str> : List of strings that will be used as the inputs to the models
+			- tokenizer : The correct tokenizer for the specific model type. Used to tokenizer input data
+			- max_seq_len : int : Maximum length of an input sequence
+			- rtn_seg_pos : bool : Whether to include segment and position ids in samples
+			- labels : list<int> : List of integers that will be used as the class labels for inputs
 		"""
 		self.data = data
 		self.data_processor = DataProcessor(tokenizer, max_seq_len)
@@ -91,15 +93,23 @@ class DataFetcher(Dataset):
 		self.labels = labels
 
 	def __len__(self):
-		'Denotes the total number of samples'
+		"""Denotes the total number of samples"""
 		return len(self.data)
 
 	def __getitem__(self, index):
-		'Generates one sample of data'
-		# Select sample
+		"""Retrieves a single sample of data
+		
+		Parameters:
+			- index : int : index of sample in the dataset
+
+		Returns:
+			- sample : dict : The input parameters for the model
+		"""
 		text = self.data[index]
 		input_ids, segment_ids, input_mask, positional_ids = self.data_processor(text)
 
+		# Convert all input parameters to tensors
+		# and add them to a dictionary
 		sample = {}
 		sample["input_ids"] = tensor(input_ids)
 		sample["attention_mask"] = tensor(input_mask)
