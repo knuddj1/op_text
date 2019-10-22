@@ -163,7 +163,7 @@ class TransformerModel:
 		
 		for batch in tqdm(test_dataloader, desc="Iteration"):
 			with torch.no_grad():
-				labels = batch["labels"]
+				labels = batch["labels"].to(self.device)
 				batch = {k: t.to(self.device) for k, t in batch.items() if k != "labels"}
 				outputs = self.model(**batch)
 				logits = outputs[0]
