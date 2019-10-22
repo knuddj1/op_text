@@ -105,8 +105,8 @@ class TransformerModel:
 			y_val = y_train[split_percent:]
 
 		num_train_optim_steps = int(len(X_train) / batch_size) * nb_epoch
-		optimizer, scheduler = setup_optim(self.model.named_parameters(),learning_rate, adam_epsilon, warmup_steps, num_train_optim_steps)
-		train_dataloader = setup_dataloader(X_train, y_train, max_seq_len,  batch_size, shuffle=True)
+		optimizer, scheduler = setup_optim(self.model.named_parameters(), learning_rate, adam_epsilon, warmup_steps, num_train_optim_steps)
+		train_dataloader = setup_dataloader(X_train, y_train, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size, shuffle=True)
 
 
 		self.model.zero_grad()
@@ -133,7 +133,7 @@ class TransformerModel:
 			
 			validation_accuracy = None
 			if validation_dataloader:
-				validation_accuracy = self.evaluate(X_val, y_val, batch_size, max_seq_len)
+				validation_accuracy = self.evaluate(X_val, y_val, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
 			
 			if chkpt_model_every:
 				if (i + 1) % chkpt_model_every == 0:
@@ -158,7 +158,7 @@ class TransformerModel:
 			- accuracy : float : The percentage of samples that the model correctly predicted
 			class labels for 	
 		"""
-		test_dataloader = setup_dataloader(X_test, y_test, max_seq_len, batch_size)
+		test_dataloader = setup_dataloader(X_test, y_test, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
 		accuracy = 0
 		
 		for batch in tqdm(test_dataloader, desc="Iteration"):
@@ -196,7 +196,7 @@ class TransformerModel:
 			assert len(label_converter) == self.config.num_labels, (f"@Param: 'label_coverter has length of {len(label_converter)}."
 																	f"Must have same length as config.num_labels: {self.config.num_labels}")
 
-		predictions_dataloader = setup_dataloader(data, None, max_seq_len, batch_size)
+		predictions_dataloader = setup_dataloader(data, None, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
 		predictions = []
 		for batch in tqdm(predictions_dataloader, desc="Iteration"):
 			with torch.no_grad():
