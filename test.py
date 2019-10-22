@@ -24,18 +24,18 @@ y_train = [0, 0, 1, 1, 0]
 
 for m in bert_models:
     model = Bert(m)
-    model.fit(X_train, y_train, validation_split=0.2, chkpt_model_every=1, model_save_dir=os.getcwd(), nb_epoch=2) 
+    model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=os.getcwd(), nb_epoch=2) 
     print(m, model.evaluate(X_train, y_train))
     print(m, model.predict(X_train[:1]))
 
 for m in roberta_models:
     model = Roberta(m)
-    model.fit(X_train, y_train, validation_split=0.2, chkpt_model_every=1, model_save_dir=os.getcwd(), nb_epoch=2)
+    model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=os.getcwd(), nb_epoch=2)
     print(m, model.evaluate(X_train, y_train))
     print(m, model.predict(X_train[:1]))
 
 for m in distil_models:
     model = DistilBert(m)
-    model.fit(X_train, y_train, validation_split=0.2, chkpt_model_every=1, model_save_dir=os.getcwd(), nb_epoch=2)
+    model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=os.getcwd(), nb_epoch=2)
     print(m, model.evaluate(X_train, y_train))
     print(m, model.predict(X_train[:1]))
