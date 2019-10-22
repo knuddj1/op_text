@@ -40,11 +40,11 @@ class TransformerModel:
 																		  f" {downloadables} or a path to the"
 																		  " directory of a local model")
 
-		self.config = config_cls(model_path)
+		self.config = config_cls.from_pretrained(model_path)
 		if model_path in downloadables:
 			self.config.num_labels = num_labels
 		self.tokenizer = tokenizer_cls.from_pretrained(model_path)
-		self.model = model_cls(model_path)
+		self.model = model_cls.from_pretrained(model_path)
 		self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
 		self.model.to(self.device)
 		self.rtn_seg_pos = rtn_seg_pos
