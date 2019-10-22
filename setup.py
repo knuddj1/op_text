@@ -1,22 +1,21 @@
-from distutils.core import setup
+import setuptools
 from os import path
 
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
-setup(
+setuptools.setup(
     name='op_text',
-    packages=['op_text'],
-    version='0.1.2',
+    version='0.1.3',
     license='MIT',
-    description='Identify the sentiment of a piece of text',
+    description='Thin wrapper around HuggingFace Transformers sequence classification models for ease of use',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Dean Knudson',
     author_email='knuddj1@student.op.ac.nz',
     url='https://github.com/knuddj1/op_text',
     keywords='NLP deep learning transformer pytorch BERT GPT GPT-2 google openai CMU sentiment text',
+    packages=setuptools.find_packages(),
     install_requires=[
         'numpy',
         'torch>=1.0.0',
@@ -33,6 +32,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
-
-    
+    python_requires='>=3.6',
 )
