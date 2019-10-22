@@ -24,7 +24,9 @@ y_train = [0, 0, 1, 1, 0]
 
 for m in bert_models:
     model = Bert(m)
-    model_save = os.path.join(r"F:\\", m.split("\\")[-2])
+    model_name = m.split("\\")
+    model_name = model_name[-2] if len(model_name) > 1 else model_name[0]
+    model_save = os.path.join(r"F:\\", model_name)
     if not os.path.exists(model_save):
         os.mkdir(model_save)
     model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=model_save, nb_epoch=2) 
@@ -33,7 +35,9 @@ for m in bert_models:
 
 for m in roberta_models:
     model = Roberta(m)
-    model_save = os.path.join(r"F:\\", m.split("\\")[-2])
+    model_name = m.split("\\")
+    model_name = model_name[-2] if len(model_name) > 1 else model_name[0]
+    model_save = os.path.join(r"F:\\", model_name)
     if not os.path.exists(model_save):
         os.mkdir(model_save)
     model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=model_save, nb_epoch=2)
@@ -42,7 +46,9 @@ for m in roberta_models:
 
 for m in distil_models:
     model = DistilBert(m)
-    model_save = os.path.join(r"F:\\", m.split("\\")[-2])
+    model_name = m.split("\\")
+    model_name = model_name[-2] if len(model_name) > 1 else model_name[0]
+    model_save = os.path.join(r"F:\\", model_name)
     if not os.path.exists(model_save):
         os.mkdir(model_save)
     model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=model_save, nb_epoch=2)
