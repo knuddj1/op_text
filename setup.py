@@ -1,12 +1,18 @@
 from distutils.core import setup
-from io import open
+from os import path
+
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='op_text',
     packages=['op_text'],
-    version='0.1',
+    version='0.1.2',
     license='MIT',
     description='Identify the sentiment of a piece of text',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Dean Knudson',
     author_email='knuddj1@student.op.ac.nz',
     url='https://github.com/knuddj1/op_text',
