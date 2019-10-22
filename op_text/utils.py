@@ -72,7 +72,7 @@ def calculate_accuracy(logits, labels):
 	Returns:
 		- int : Number of labels the model correctly predicted
 	"""
-	_, pred_indices = get_confidence_scores(logits).max(-1)
+	pred_indices = get_confidence_scores(logits).max(-1)[-1].tolist()
 	results = pred_indices == labels
 	return results.sum().item()
 
