@@ -105,7 +105,7 @@ class TransformerModel:
 			y_val = y_train[split_percent:]
 
 		num_train_optim_steps = int(len(X_train) / batch_size) * nb_epoch
-		optimizer, scheduler = setup_optim(learning_rate, adam_epsilon, warmup_steps, num_train_optim_steps)
+		optimizer, scheduler = setup_optim(self.model.named_parameters(),learning_rate, adam_epsilon, warmup_steps, num_train_optim_steps)
 		train_dataloader = setup_dataloader(X_train, y_train, max_seq_len,  batch_size, shuffle=True)
 
 
