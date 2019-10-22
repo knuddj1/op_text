@@ -24,21 +24,27 @@ y_train = [0, 0, 1, 1, 0]
 
 for m in bert_models:
     model = Bert(m)
-    model_save = os.path.join(os.getcwd(), m.split("\\")[-2])
+    model_save = os.path.join(r"F:\", m.split("\\")[-2])
+    if not os.path.exists(model_save):
+        os.mkdir(model_save)
     model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=model_save, nb_epoch=2) 
     print(m, model.evaluate(X_train, y_train))
     print(m, model.predict(X_train[:1]))
 
 for m in roberta_models:
     model = Roberta(m)
-    model_save = os.path.join(os.getcwd(), m.split("\\")[-2])
+    model_save = os.path.join(r"F:\", m.split("\\")[-2])
+    if not os.path.exists(model_save):
+        os.mkdir(model_save)
     model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=model_save, nb_epoch=2)
     print(m, model.evaluate(X_train, y_train))
     print(m, model.predict(X_train[:1]))
 
 for m in distil_models:
     model = DistilBert(m)
-    model_save = os.path.join(os.getcwd(), m.split("\\")[-2])
+    model_save = os.path.join(r"F:\", m.split("\\")[-2])
+    if not os.path.exists(model_save):
+        os.mkdir(model_save)
     model.fit(X_train, y_train, validation_split=0.4, chkpt_model_every=1, model_save_dir=model_save, nb_epoch=2)
     print(m, model.evaluate(X_train, y_train))
     print(m, model.predict(X_train[:1]))
