@@ -136,12 +136,13 @@ class TransformerModel:
 				validation_accuracy = self.evaluate(X_val, y_val, batch_size, max_seq_len)
 			
 			if chkpt_model_every:
-				results = {
-					"train accuracy": train_accuracy / len(train_dataloader),
-					"validation_accuracy": validation_accuracy
-				}
-				chkpt_name = "chkpt epochs={0}".format(i + 1)
-				self.save(model_save_dir, chkpt_name, results)
+				if (i + 1) % chkpt_model_every == 0:
+					results = {
+						"train accuracy": train_accuracy / len(train_dataloader),
+						"validation_accuracy": validation_accuracy
+					}
+					chkpt_name = "chkpt epochs={0}".format(i + 1)
+					self.save(model_save_dir, chkpt_name, results)
 
 			
 	def evaluate(self, X_test, y_test, batch_size=32, max_seq_len=128):
