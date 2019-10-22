@@ -256,13 +256,7 @@ class Bert(TransformerModel):
 			list. Local models will already have this.
 		"""
 
-		super(TransformerModel, self).__init__(model_path,
-											   BertConfig, 
-											   BertTokenizer, 
-											   BertForSequenceClassification, 
-											   Bert.DOWNLOADABLES, 
-											   True, 
-											   num_labels)
+		super().__init__(model_path, BertConfig, BertTokenizer, BertForSequenceClassification, Bert.DOWNLOADABLES, True, num_labels)
 
 
 class Roberta(TransformerModel):
@@ -282,13 +276,7 @@ class Roberta(TransformerModel):
 			list. Local models will already have this.
 		"""
 
-		super(TransformerModel, self).__init__(model_path,
-											   RobertaConfig, 
-											   RobertaTokenizer, 
-											   RobertaForSequenceClassification, 
-											   Roberta.DOWNLOADABLES, 
-											   True, 
-											   num_labels)
+		super().__init__(model_path, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, Roberta.DOWNLOADABLES, True, num_labels)
 
 
 class DistilBert(TransformerModel):
@@ -308,13 +296,7 @@ class DistilBert(TransformerModel):
 			list. Local models will already have this.
 		"""
 		
-		super(TransformerModel, self).__init__(model_path,
-											   DistilBertConfig, 
-											   DistilBertTokenizer, 
-											   DistilBertForSequenceClassification, 
-											   DistilBert.DOWNLOADABLES, 
-											   False, 
-											   num_labels)
+		super().__init__(model_path, DistilBertConfig, DistilBertTokenizer, DistilBertForSequenceClassification, DistilBert.DOWNLOADABLES, False, num_labels)
 	
 
 
