@@ -92,7 +92,6 @@ class TransformerModel:
 													" Must supply an existing directory if @Param: "
 													"'chkpt_model_every' is used")
 
-		validation_dataloader=None
 		if validation_split:
 			assert validation_split > 0 and validation_split < 1, ("@Param: 'validation_split' =="
 																  f" {validation_split} must be "
@@ -132,7 +131,7 @@ class TransformerModel:
 				torch.cuda.empty_cache()
 			
 			validation_accuracy = None
-			if validation_dataloader:
+			if validation_split:
 				validation_accuracy = self.evaluate(X_val, y_val, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
 			
 			if chkpt_model_every:
