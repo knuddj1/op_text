@@ -11,7 +11,6 @@ from pytorch_transformers.tokenization_distilbert import DistilBertTokenizer
 from pytorch_transformers.modeling_roberta import RobertaConfig, RobertaForSequenceClassification
 from pytorch_transformers.tokenization_roberta import RobertaTokenizer
 
-from tqdm import tqdm, trange
 from op_text.utils import setup_dataloader, setup_optim, get_confidence_scores, calculate_accuracy, LabelConverter
 
 class TransformerModel:
@@ -53,7 +52,7 @@ class TransformerModel:
 	def fit(self, X_train, y_train, validation_split=None,
 			chkpt_model_every=None, model_save_dir=None, nb_epoch=1, batch_size=32,
 			max_seq_len=128, learning_rate=3e-5, adam_epsilon=1e-8,
-			warmup_steps=0, gradient_accumulation_steps=1):
+			warmup_steps=0, gradient_accumulation_steps=1, verbose=False, verbose_steps=1):
 		"""Finetunes the model on a dataset for a number of epochs
 		
 		Parameters:
@@ -80,6 +79,9 @@ class TransformerModel:
 					A batch size of 32 is desired but not enough memory to hold the entire batch.
 					Using a batch_size of 16 and gradient_accumulation_steps of 2 achieves the same 
 					result. This will however take longer to train.
+
+			-verbose : bool : Whether to print training information to the console
+			-verbose_steps : int : Number of steps before training information is updated
 		"""
 		
 		# If chkpt_model_every is used, this makes sure that it is an integer,
@@ -91,6 +93,10 @@ class TransformerModel:
 													" Directory does not exist"
 													" Must supply an existing directory if @Param: "
 													"'chkpt_model_every' is used")
+
+		if verbose:
+			assert type(verbose_steps) == int, "@Param: 'verbose steps' must be an integer" 
+			assert verbose_steps > 0, "@Param: 'verbose_steps' must be a positive integer greater than 0"							
 
 		if validation_split:
 			assert validation_split > 0 and validation_split < 1, ("@Param: 'validation_split' =="
@@ -110,10 +116,11 @@ class TransformerModel:
 
 		self.model.zero_grad()
 		self.model.train()
+		tr_loss = 0
 		for i in range(nb_epoch):
 			step = 0
 			train_accuracy = 0
-			for batch in tqdm(train_dataloader, desc="Iteration"):
+			for batch in train_dataloader:
 				batch = {k: t.to(self.device) for k, t in batch.items()}
 				outputs = self.model(**batch)
 				loss, logits = outputs[:2]
@@ -125,10 +132,20 @@ class TransformerModel:
 					scheduler.step()
 					self.model.zero_grad()
 				step += 1
+				tr_loss += loss.item()
 
 				batch = {k: t.detach().cpu() for k, t in batch.items()}
 				del batch
 				torch.cuda.empty_cache()
+
+				if verbose and step % verbose_steps == 0:
+					os.system('cls' if os.name == 'nt' else 'clear')
+					print_str = (f"Current Epoch: {i + 1} \n"
+								f"Steps Completed: {step}/{len(train_dataloader)} \n"
+								f"Training Loss: {tr_loss/ ((i + 1) * (step * batch_size))} \n"
+								f"Accuracy: {train_accuracy / (step * batch_size)}")
+					print(print_str)
+
 			
 			validation_accuracy = None
 			if validation_split:
@@ -138,7 +155,8 @@ class TransformerModel:
 				if (i + 1) % chkpt_model_every == 0:
 					results = {
 						"train accuracy": train_accuracy / len(train_dataloader),
-						"validation_accuracy": validation_accuracy
+						"validation_accuracy": validation_accuracy,
+						"train loss": tr_loss / ((i + 1) * len(train_dataloader))
 					}
 					chkpt_name = "chkpt epochs={0}".format(i + 1)
 					self.save(model_save_dir, chkpt_name, results)
@@ -160,7 +178,7 @@ class TransformerModel:
 		test_dataloader = setup_dataloader(X_test, y_test, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
 		accuracy = 0
 		
-		for batch in tqdm(test_dataloader, desc="Iteration"):
+		for batch in test_dataloader:
 			with torch.no_grad():
 				labels = batch["labels"].to(self.device)
 				batch = {k: t.to(self.device) for k, t in batch.items() if k != "labels"}
@@ -197,7 +215,7 @@ class TransformerModel:
 
 		predictions_dataloader = setup_dataloader(data, None, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
 		predictions = []
-		for batch in tqdm(predictions_dataloader, desc="Iteration"):
+		for batch in predictions_dataloader:
 			with torch.no_grad():
 				batch = {k: t.to(self.device) for k, t in batch.items()}
 				outputs = self.model(**batch)
