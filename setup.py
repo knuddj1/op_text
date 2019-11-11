@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='op_text',
-    version='0.1.3',
+    version='0.2.0',
     license='MIT',
     description='Thin wrapper around HuggingFace Transformers sequence classification models for ease of use',
     long_description=long_description,
