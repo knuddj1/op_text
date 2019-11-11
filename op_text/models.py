@@ -149,7 +149,7 @@ class TransformerModel:
 			
 			validation_accuracy = None
 			if validation_split:
-				validation_accuracy = self.evaluate(X_val, y_val, self.tokenizer, self.rtn_seg_pos, max_seq_len, batch_size)
+				validation_accuracy = self.evaluate(X_val, y_val, max_seq_len, batch_size)
 			
 			if chkpt_model_every:
 				if (i + 1) % chkpt_model_every == 0:
